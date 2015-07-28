@@ -2,7 +2,6 @@
 
 # stdlib
 import unittest
-import pickle
 
 # 3rd party
 import redis

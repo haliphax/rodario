@@ -2,7 +2,6 @@
 
 # stdlib
 import unittest
-import pickle
 import multiprocessing.queues
 
 # 3rd party
