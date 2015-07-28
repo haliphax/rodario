@@ -49,6 +49,12 @@ class Actor(object):
 
         self.stop()
 
+    @property
+    def is_alive(self):
+        """ Return True if this Actor is still alive. """
+
+        return not self._stop.is_set()
+
     def _handler(self, message):
         """
         Send proxied method call results back through pubsub.
