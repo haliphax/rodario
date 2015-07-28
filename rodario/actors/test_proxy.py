@@ -33,6 +33,9 @@ class ProxyTests(unittest.TestCase):
     def tearDownClass(cls):
         cls.actor.stop()
 
+    def testNoParametersInConstructor(self):
+        self.assertRaises(Exception, ActorProxy)
+
     def testMethodExists(self):
         self.assertTrue(getattr(self.proxy, 'test') is not None)
 
