@@ -82,7 +82,8 @@ class Actor(object):
         method_list = []
 
         for name, _ in methods:
-            if name in ('proxy', 'get_methods',) or name[0] == '_':
+            if (name in ('proxy', 'get_methods', 'start', 'stop',)
+                    or name[0] == '_'):
                 continue
 
             method_list.append(name)
