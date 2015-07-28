@@ -73,7 +73,7 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
         def get_lambda(name):
             """
             Generate a lambda function to proxy the given method.
-            
+
             :param str name: Name of the method to proxy
             """
 
@@ -90,7 +90,7 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
     def _handler(self, message):
         """
         Handle message response via Queue object.
-        
+
         :param tuple message: The message to dissect
         """
 
@@ -113,8 +113,11 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
         queue = str(uuid4())
         self.response_queues[queue] = Queue()
         # fire off the method call to the original Actor over pubsub
-        self.redis.publish('actor:%s' % self.uuid,
-                           pickle.dumps((self.proxyid, queue, method_name, args,
-                                         kwargs,)))
+        count = self.redis.publish('actor:%s' % self.uuid,
+                                   pickle.dumps((self.proxyid, queue,
+                                                 method_name, args, kwargs,)))
+
+        if count == 0:
+            raise Exception('No such actor')
 
         return self.response_queues[queue]

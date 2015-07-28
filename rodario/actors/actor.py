@@ -29,8 +29,6 @@ class Actor(object):
         self._stop = Event()
         #: Separate Thread for handling messages
         self._proc = None
-        #: How long to wait between message checks
-        self.poll_delay = 0.01
         #: Redis connection
         self.redis = redis.StrictRedis()
         # pylint: disable=I0011,E1123
@@ -99,7 +97,7 @@ class Actor(object):
             try:
                 while not self._stop.is_set():
                     pubsub.get_message()
-                    sleep(self.poll_delay)
+                    sleep(0.01)
             except:  # pylint: disable=I0011,W0702
                 pass
 
