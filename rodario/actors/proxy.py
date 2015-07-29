@@ -48,12 +48,9 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
         def pubsub_thread():
             """ Call get_message in loop to fire _handler. """
 
-            try:
-                while True:
-                    self.pubsub.get_message()
-                    sleep(0.01)
-            except TypeError:
-                pass
+            while True:
+                self.pubsub.get_message()
+                sleep(0.01)
 
         # fire up the message handler thread as a daemon
         proc = Thread(target=pubsub_thread)
@@ -116,13 +113,15 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
 
         # create a unique response queue for retrieving the return value async
         queue = str(uuid4())
-        self.response_queues[queue] = Queue()
         # fire off the method call to the original Actor over pubsub
         count = self.redis_conn.publish('actor:%s' % self.uuid,
                                         pickle.dumps((self.proxyid, queue,
-                                                      method_name, args, kwargs,)))
+                                                      method_name, args,
+                                                      kwargs,)))
 
         if count == 0:
             raise Exception('No such actor')
+
+        self.response_queues[queue] = Queue()
 
         return self.response_queues[queue]
