@@ -11,7 +11,6 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-.. automodule:: rodario.actors
 .. autoclass:: rodario.actors.Actor
 .. autoclass:: rodario.actors.ActorProxy
 
