@@ -64,9 +64,10 @@ class ActorTests(unittest.TestCase):
         self.actor.stop()
 
     def testGetMethods(self):
-        """ Verify that get_methods returns the expected list. """
+        """ Verify that _get_methods returns the expected list. """
 
-        self.assertEqual(['another_method', 'test'], self.actor.get_methods())
+        # pylint: disable=I0011,W0212
+        self.assertEqual(['another_method', 'test'], self.actor._get_methods())
 
     def testHandler(self):
         """ Verify that the Actor is responding to proxied method calls. """

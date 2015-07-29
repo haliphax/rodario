@@ -79,7 +79,7 @@ class Actor(object):
         result = (queue, func(*data[3], **data[4]),)
         self.redis.publish('proxy:%s' % proxy, pickle.dumps(result))
 
-    def get_methods(self):
+    def _get_methods(self):
         """
         List all of this Actor's methods (for creating remote proxies).
 
@@ -90,7 +90,7 @@ class Actor(object):
         method_list = []
 
         for name, _ in methods:
-            if (name in ('proxy', 'get_methods', 'start', 'stop',)
+            if (name in ('proxy', '_get_methods', 'start', 'stop',)
                     or name[0] == '_'):
                 continue
 

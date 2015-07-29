@@ -62,7 +62,7 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
         elif isinstance(uuid, str):
             # proxying by UUID; get actor methods over pubsub
             self.uuid = uuid
-            pre_methods = self._proxy('get_methods').get()
+            pre_methods = self._proxy('_get_methods').get()
 
             for name in pre_methods:
                 methods.append((name, None,))
