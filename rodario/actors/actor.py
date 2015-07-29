@@ -30,16 +30,16 @@ class Actor(object):
         #: Separate Thread for handling messages
         self._proc = None
         #: Redis connection
-        self.redis_conn = redis.StrictRedis()
+        self._redis = redis.StrictRedis()
         #: Redis PubSub client
-        self.pubsub = None
+        self._pubsub = None
 
         # pylint: disable=I0011,E1123
-        self.pubsub = self.redis_conn.pubsub(ignore_subscribe_messages=True)
+        self._pubsub = self._redis.pubsub(ignore_subscribe_messages=True)
 
         if uuid:
             # if custom UUID is provided, check for existence first
-            if self.redis_conn.publish('actor:%s' % uuid, None):
+            if self._redis.publish('actor:%s' % uuid, None):
                 raise Exception('Actor exists')
 
             self.uuid = uuid
@@ -79,7 +79,7 @@ class Actor(object):
         queue = data[1]
         func = getattr(self, data[2])
         result = (queue, func(*data[3], **data[4]),)
-        self.redis_conn.publish('proxy:%s' % proxy, pickle.dumps(result))
+        self._redis.publish('proxy:%s' % proxy, pickle.dumps(result))
 
     def _get_methods(self):
         """
@@ -126,8 +126,8 @@ class Actor(object):
                 pass
 
         # subscribe to personal channel and fire up the message handler
-        self.pubsub.subscribe(**{'actor:%s' % self.uuid: self._handler})
-        self._proc = Thread(target=pubsub_thread, args=(self.pubsub,))
+        self._pubsub.subscribe(**{'actor:%s' % self.uuid: self._handler})
+        self._proc = Thread(target=pubsub_thread, args=(self._pubsub,))
         self._proc.daemon = True
         self._proc.start()
 

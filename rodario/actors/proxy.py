@@ -17,11 +17,6 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
 
     """ Proxy object that fires calls to an actor over redis pubsub """
 
-    #: Redis connection
-    redis_conn = redis.StrictRedis()
-    #: Redis PubSub client
-    pubsub = None
-
     def __init__(self, actor=None, uuid=None):
         """
         Initialize instance of ActorProxy.
@@ -32,16 +27,20 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
         :param str uuid: UUID of Actor to clone
         """
 
+        #: Redis connection
+        self._redis = redis.StrictRedis()
+        #: Redis PubSub client
+        self._pubsub = None
         #: This proxy object's UUID for creating unique channels
         self.proxyid = str(uuid4())
         #: Dict of response queues for sandboxing method calls
-        self.response_queues = {}
+        self._response_queues = {}
 
         # avoid cyclic import
         actor_module = __import__('rodario.actors', fromlist=('Actor',))
         # pylint: disable=I0011,E1123
-        self.pubsub = self.redis_conn.pubsub(ignore_subscribe_messages=True)
-        self.pubsub.subscribe(**{'proxy:%s' % self.proxyid: self._handler})
+        self._pubsub = self._redis.pubsub(ignore_subscribe_messages=True)
+        self._pubsub.subscribe(**{'proxy:%s' % self.proxyid: self._handler})
 
         methods = []
 
@@ -49,7 +48,7 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
             """ Call get_message in loop to fire _handler. """
 
             while True:
-                self.pubsub.get_message()
+                self._pubsub.get_message()
                 sleep(0.01)
 
         # fire up the message handler thread as a daemon
@@ -98,8 +97,8 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
         # throw its value in the associated response queue
         data = pickle.loads(message['data'])
         queue = data[0]
-        self.response_queues[queue].put(data[1])
-        self.response_queues.pop(queue, None)
+        self._response_queues[queue].put(data[1])
+        self._response_queues.pop(queue, None)
 
     def _proxy(self, method_name, *args, **kwargs):
         """
@@ -114,14 +113,14 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
         # create a unique response queue for retrieving the return value async
         queue = str(uuid4())
         # fire off the method call to the original Actor over pubsub
-        count = self.redis_conn.publish('actor:%s' % self.uuid,
-                                        pickle.dumps((self.proxyid, queue,
-                                                      method_name, args,
-                                                      kwargs,)))
+        count = self._redis.publish('actor:%s' % self.uuid,
+                                    pickle.dumps((self.proxyid, queue,
+                                                  method_name, args,
+                                                  kwargs,)))
 
         if count == 0:
             raise Exception('No such actor')
 
-        self.response_queues[queue] = Queue()
+        self._response_queues[queue] = Queue()
 
-        return self.response_queues[queue]
+        return self._response_queues[queue]

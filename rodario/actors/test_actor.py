@@ -26,7 +26,7 @@ class TestActor(Actor):
         return 2
 
 
-# pylint: disable=I0011,R0904,C0103
+# pylint: disable=I0011,R0904,C0103,W0212
 class ActorTests(unittest.TestCase):
 
     """ Actor unit tests """
@@ -66,7 +66,6 @@ class ActorTests(unittest.TestCase):
     def testGetMethods(self):
         """ Verify that _get_methods returns the expected list. """
 
-        # pylint: disable=I0011,W0212
         self.assertEqual(['another_method', 'test'], self.actor._get_methods())
 
     def testHandler(self):
