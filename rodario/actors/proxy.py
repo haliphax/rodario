@@ -12,9 +12,6 @@ from time import sleep
 # 3rd party
 import redis
 
-# local
-import rodario.actors
-
 
 class ActorProxy(object):  # pylint: disable=I0011,R0903
 
@@ -29,6 +26,9 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
         :param rodario.actors.Actor actor: Actor to clone
         :param str uuid: UUID of Actor to clone
         """
+
+        # avoid cyclic import
+        actor_module = __import__('rodario.actors', fromlist=('Actor',))
 
         #: This proxy object's UUID for creating unique channels
         self.proxyid = str(uuid4())
@@ -55,7 +55,7 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
         proc.daemon = True
         proc.start()
 
-        if isinstance(actor, rodario.actors.Actor):
+        if isinstance(actor, actor_module.Actor):
             # proxying an Actor directly
             self.uuid = actor.uuid
             methods = inspect.getmembers(actor, predicate=inspect.ismethod)

@@ -10,9 +10,6 @@ import inspect
 # 3rd party
 import redis
 
-# local
-import rodario.actors
-
 
 class Actor(object):
 
@@ -105,7 +102,10 @@ class Actor(object):
         :rtype: :class:`rodario.actors.ActorProxy`
         """
 
-        return rodario.actors.ActorProxy(self)
+        # avoid cyclic import
+        proxy_module = __import__('rodario.actors', fromlist=('ActorProxy',))
+
+        return proxy_module.ActorProxy(self)
 
     def start(self):
         """ Fire up the message handler thread. """
