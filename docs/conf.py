@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # rodario documentation build configuration file, created by
-# sphinx-quickstart on Tue Jul 28 22:28:45 2015.
+# sphinx-quickstart on Tue Jul 28 22:49:31 2015.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -15,6 +15,8 @@
 import sys
 import os
 import shlex
+
+sys.path.insert(0, '/home/haliphax/code/python/rodario')
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -31,7 +33,6 @@ import shlex
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.viewcode',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -77,7 +78,7 @@ language = None
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = []
+exclude_patterns = ['_build']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -285,3 +286,8 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+
+# Example configuration for intersphinx: refer to the Python standard library.
+intersphinx_mapping = {'https://docs.python.org/': None}
+

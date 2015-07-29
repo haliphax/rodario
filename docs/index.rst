@@ -1,5 +1,5 @@
 .. rodario documentation master file, created by
-   sphinx-quickstart on Tue Jul 28 22:28:45 2015.
+   sphinx-quickstart on Tue Jul 28 22:49:31 2015.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -9,8 +9,11 @@ Welcome to rodario's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
+.. automodule:: rodario.actors
+.. autoclass:: rodario.actors.Actor
+.. autoclass:: rodario.actors.ActorProxy
 
 
 Indices and tables
