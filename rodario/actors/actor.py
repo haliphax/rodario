@@ -11,7 +11,7 @@ import inspect
 import redis
 
 # local
-import rodario.actors
+from rodario.actors import ActorProxy
 
 
 class Actor(object):
@@ -93,7 +93,7 @@ class Actor(object):
     def proxy(self):
         """ Return an ActorProxy object. """
 
-        return rodario.actors.ActorProxy(self)
+        return ActorProxy(self)
 
     def start(self):
         """ Fire up the message handler thread. """
@@ -108,7 +108,6 @@ class Actor(object):
             except:  # pylint: disable=I0011,W0702
                 pass
 
-        # pylint: disable=I0011,W0142
         # subscribe to personal channel and fire up the message handler
         self.pubsub.subscribe(**{'actor:%s' % self.uuid: self._handler})
         self._proc = Thread(target=pubsub_thread, args=(self.pubsub,))

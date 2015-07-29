@@ -13,7 +13,7 @@ from time import sleep
 import redis
 
 # local
-import rodario.actors
+from rodario.actors import Actor
 
 
 class ActorProxy(object):  # pylint: disable=I0011,R0903
@@ -26,7 +26,7 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
 
         Accepts either an Actor object to clone or a UUID, but not both.
 
-        :param rodario.actors.Actor actor: Actor to clone
+        :param Actor actor: Actor to clone
         :param str uuid: UUID of Actor to clone
         """
 
@@ -39,7 +39,6 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
         # pylint: disable=I0011,E1123
         #: Redis PubSub client
         self.pubsub = self.redis.pubsub(ignore_subscribe_messages=True)
-        # pylint: disable=I0011,W0142
         self.pubsub.subscribe(**{'proxy:%s' % self.proxyid: self._handler})
 
         methods = []
@@ -56,7 +55,7 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
         proc.daemon = True
         proc.start()
 
-        if isinstance(actor, rodario.actors.Actor):
+        if isinstance(actor, Actor):
             # proxying an Actor directly
             self.uuid = actor.uuid
             methods = inspect.getmembers(actor, predicate=inspect.ismethod)
@@ -77,7 +76,6 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
             :param str name: Name of the method to proxy
             """
 
-            # pylint: disable=I0011,W0142
             return lambda _, *args, **kwargs: self._proxy(name, *args, **kwargs)
 
         # create proxy methods for each public method of the original Actor
