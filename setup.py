@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='rodario',
-    version='1.0.0a2',
+    version='1.0.0a3',
     description='Simple, redis-backed Python actor framework',
     url='https://github.com/haliphax/rodario',
     author='haliphax',
