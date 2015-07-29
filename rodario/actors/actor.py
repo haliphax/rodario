@@ -15,6 +15,10 @@ class Actor(object):
 
     """ Base Actor class """
 
+    #: Threading Event to tell the message handling loop to die
+    # (needed in __del__ so must be defined here)
+    _stop = None
+
     def __init__(self, uuid=None):
         """
         Initialize the Actor object.
@@ -22,19 +26,20 @@ class Actor(object):
         :param str uuid: Optionally-provided UUID
         """
 
-        #: Threading Event to tell the message handling loop to die
         self._stop = Event()
         #: Separate Thread for handling messages
         self._proc = None
         #: Redis connection
-        self.redis = redis.StrictRedis()
-        # pylint: disable=I0011,E1123
+        self.redis_conn = redis.StrictRedis()
         #: Redis PubSub client
-        self.pubsub = self.redis.pubsub(ignore_subscribe_messages=True)
+        self.pubsub = None
+
+        # pylint: disable=I0011,E1123
+        self.pubsub = self.redis_conn.pubsub(ignore_subscribe_messages=True)
 
         if uuid:
             # if custom UUID is provided, check for existence first
-            if self.redis.publish('actor:%s' % uuid, None):
+            if self.redis_conn.publish('actor:%s' % uuid, None):
                 raise Exception('Actor exists')
 
             self.uuid = uuid
@@ -74,7 +79,7 @@ class Actor(object):
         queue = data[1]
         func = getattr(self, data[2])
         result = (queue, func(*data[3], **data[4]),)
-        self.redis.publish('proxy:%s' % proxy, pickle.dumps(result))
+        self.redis_conn.publish('proxy:%s' % proxy, pickle.dumps(result))
 
     def _get_methods(self):
         """
@@ -117,7 +122,7 @@ class Actor(object):
                 while not self._stop.is_set():
                     pubsub.get_message()
                     sleep(0.01)
-            except:  # pylint: disable=I0011,W0702
+            except TypeError:
                 pass
 
         # subscribe to personal channel and fire up the message handler

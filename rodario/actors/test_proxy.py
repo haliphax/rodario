@@ -58,12 +58,13 @@ class ProxyTests(unittest.TestCase):
 
         response = self.proxy.test()  # pylint: disable=I0011,E1101
         self.assertEqual(multiprocessing.queues.Queue, type(response))
-        response.get()
+        response.get(timeout=1)
 
     def testProxyCallAndResponse(self):
         """ Validate the return value of MyActor.test. """
 
-        response = self.proxy.test().get()  # pylint: disable=I0011,E1101
+        # pylint: disable=I0011,E1101
+        response = self.proxy.test().get(timeout=1)
         self.assertEqual(1, response)
 
 

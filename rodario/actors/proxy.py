@@ -17,6 +17,11 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
 
     """ Proxy object that fires calls to an actor over redis pubsub """
 
+    #: Redis connection
+    redis_conn = redis.StrictRedis()
+    #: Redis PubSub client
+    pubsub = None
+
     def __init__(self, actor=None, uuid=None):
         """
         Initialize instance of ActorProxy.
@@ -27,18 +32,15 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
         :param str uuid: UUID of Actor to clone
         """
 
-        # avoid cyclic import
-        actor_module = __import__('rodario.actors', fromlist=('Actor',))
-
         #: This proxy object's UUID for creating unique channels
         self.proxyid = str(uuid4())
         #: Dict of response queues for sandboxing method calls
         self.response_queues = {}
-        #: Redis connection
-        self.redis = redis.StrictRedis()
+
+        # avoid cyclic import
+        actor_module = __import__('rodario.actors', fromlist=('Actor',))
         # pylint: disable=I0011,E1123
-        #: Redis PubSub client
-        self.pubsub = self.redis.pubsub(ignore_subscribe_messages=True)
+        self.pubsub = self.redis_conn.pubsub(ignore_subscribe_messages=True)
         self.pubsub.subscribe(**{'proxy:%s' % self.proxyid: self._handler})
 
         methods = []
@@ -46,9 +48,12 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
         def pubsub_thread():
             """ Call get_message in loop to fire _handler. """
 
-            while True:
-                self.pubsub.get_message()
-                sleep(0.01)
+            try:
+                while True:
+                    self.pubsub.get_message()
+                    sleep(0.01)
+            except TypeError:
+                pass
 
         # fire up the message handler thread as a daemon
         proc = Thread(target=pubsub_thread)
@@ -113,9 +118,9 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
         queue = str(uuid4())
         self.response_queues[queue] = Queue()
         # fire off the method call to the original Actor over pubsub
-        count = self.redis.publish('actor:%s' % self.uuid,
-                                   pickle.dumps((self.proxyid, queue,
-                                                 method_name, args, kwargs,)))
+        count = self.redis_conn.publish('actor:%s' % self.uuid,
+                                        pickle.dumps((self.proxyid, queue,
+                                                      method_name, args, kwargs,)))
 
         if count == 0:
             raise Exception('No such actor')
