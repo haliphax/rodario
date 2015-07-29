@@ -8,4 +8,3 @@ local/
 rodario.egg-info/
 src/
 *.pyc
-Makefile
