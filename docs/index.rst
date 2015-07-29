@@ -6,6 +6,9 @@
 Welcome to rodario's documentation!
 ===================================
 
+* `Homepage <https://github.com/haliphax/rodario>`_
+* `Build status <https://semaphoreci.com/haliphax/rodario>`_
+
 Contents:
 
 .. toctree::
