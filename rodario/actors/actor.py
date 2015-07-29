@@ -11,7 +11,7 @@ import inspect
 import redis
 
 # local
-from rodario.actors import ActorProxy
+import rodario.actors
 
 
 class Actor(object):
@@ -93,7 +93,7 @@ class Actor(object):
     def proxy(self):
         """ Return an ActorProxy object. """
 
-        return ActorProxy(self)
+        return rodario.actors.ActorProxy(self)
 
     def start(self):
         """ Fire up the message handler thread. """

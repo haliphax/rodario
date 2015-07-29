@@ -13,7 +13,7 @@ from time import sleep
 import redis
 
 # local
-from rodario.actors import Actor
+import rodario.actors
 
 
 class ActorProxy(object):  # pylint: disable=I0011,R0903
@@ -26,7 +26,7 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
 
         Accepts either an Actor object to clone or a UUID, but not both.
 
-        :param Actor actor: Actor to clone
+        :param rodario.actors.Actor actor: Actor to clone
         :param str uuid: UUID of Actor to clone
         """
 
@@ -55,7 +55,7 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
         proc.daemon = True
         proc.start()
 
-        if isinstance(actor, Actor):
+        if isinstance(actor, rodario.actors.Actor):
             # proxying an Actor directly
             self.uuid = actor.uuid
             methods = inspect.getmembers(actor, predicate=inspect.ismethod)
