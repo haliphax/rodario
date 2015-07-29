@@ -14,14 +14,10 @@ Contents:
 .. autoclass:: rodario.actors.Actor
     :members:
     :undoc-members:
-    :inherited-members:
-    :show-inheritance:
 
 .. autoclass:: rodario.actors.ActorProxy
     :members:
     :undoc-members:
-    :inherited-members:
-    :show-inheritance:
 
 
 Indices and tables
