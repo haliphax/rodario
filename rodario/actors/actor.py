@@ -51,7 +51,11 @@ class Actor(object):
 
     @property
     def is_alive(self):
-        """ Return True if this Actor is still alive. """
+        """
+        Return True if this Actor is still alive.
+
+        :rtype: :class:`bool`
+        """
 
         return not self._stop.is_set()
 
@@ -76,7 +80,11 @@ class Actor(object):
         self.redis.publish('proxy:%s' % proxy, pickle.dumps(result))
 
     def get_methods(self):
-        """ List all of this Actor's methods (for creating remote proxies). """
+        """
+        List all of this Actor's methods (for creating remote proxies).
+
+        :rtype: :class:`list`
+        """
 
         methods = inspect.getmembers(self, predicate=inspect.ismethod)
         method_list = []
@@ -91,7 +99,11 @@ class Actor(object):
         return method_list
 
     def proxy(self):
-        """ Return an ActorProxy object. """
+        """
+        Wrap this Actor in an ActorProxy object.
+
+        :rtype: :class:`rodario.actors.ActorProxy`
+        """
 
         return rodario.actors.ActorProxy(self)
 

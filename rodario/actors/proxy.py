@@ -74,6 +74,7 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
             Generate a lambda function to proxy the given method.
 
             :param str name: Name of the method to proxy
+            :rtype: :expression:`lambda`
             """
 
             return lambda _, *args, **kwargs: self._proxy(name, *args, **kwargs)
@@ -105,6 +106,7 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
         :param str method_name: The method to proxy
         :param tuple args: The arguments to pass
         :param dict kwargs: The keyword arguments to pass
+        :rtype: :class:`multiprocessing.queues.Queue`
         """
 
         # create a unique response queue for retrieving the return value async
