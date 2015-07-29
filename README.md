@@ -6,6 +6,7 @@ Simple, redis-backed Python actor framework
 
 ## Links
 
+- [PyPI](https://pypi.python.org/pypi/rodario)
 - [Documentation](https://rodario.readthedocs.org)
 - [Build status](https://semaphoreci.com/haliphax/rodario)
 
