@@ -1,8 +1,11 @@
 bin/
 build/
 dist/
+docs-build/
 include/
 lib/
 local/
 rodario.egg-info/
+src/
 *.pyc
+Makefile
