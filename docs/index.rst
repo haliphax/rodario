@@ -18,10 +18,13 @@ Contents:
     :members:
     :undoc-members:
 
+    .. automethod:: rodario.actors.Actor.__init__
+
 .. autoclass:: rodario.actors.ActorProxy
     :members:
     :undoc-members:
 
+    .. automethod:: rodario.actors.ActorProxy.__init__
 
 Indices and tables
 ==================
