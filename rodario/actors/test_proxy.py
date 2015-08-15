@@ -63,7 +63,7 @@ class ProxyTests(unittest.TestCase):
         """ Validate that the object returned from a proxy call is a Queue. """
 
         response = self.proxy.test()  # pylint: disable=I0011,E1101
-        self.assertEqual(multiprocessing.queues.Queue, type(response))
+        self.assertTrue(isinstance(response, multiprocessing.queues.Queue))
         response.get(timeout=1)
 
     def testProxyCallAndResponse(self):

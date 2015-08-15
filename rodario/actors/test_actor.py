@@ -51,7 +51,7 @@ class ActorTests(unittest.TestCase):
         """ Create an actor with an automatically-generated UUID. """
 
         actor = TestActor()
-        self.assertTrue(type(actor.uuid) is str)
+        self.assertTrue(isinstance(actor.uuid, str))
 
     def testTakenUUID(self):
         """ Raise Exception when uuid is already taken. """
