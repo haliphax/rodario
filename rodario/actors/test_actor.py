@@ -2,6 +2,7 @@
 
 # stdlib
 import unittest
+import pickle
 
 # 3rd party
 import redis
@@ -46,6 +47,12 @@ class ActorTests(unittest.TestCase):
 
         cls.actor.stop()
 
+    def testGeneratedUUID(self):
+        """ Create an actor with an automatically-generated UUID. """
+
+        actor = TestActor()
+        self.assertTrue(type(actor.uuid) is str)
+
     def testTakenUUID(self):
         """ Raise Exception when uuid is already taken. """
 
@@ -56,6 +63,12 @@ class ActorTests(unittest.TestCase):
 
         self.assertEqual(1, self.actor.test())
         self.assertEqual(2, self.actor.another_method())
+
+    def testEmptyMethod(self):
+        """ Pass a blank method to the actor. """
+
+        self.assertIsNone(self.actor._handler({'data': pickle.dumps((None,
+                                                                     None,))}))
 
     def testIsAlive(self):
         """ Verify is_alive returns True. """

@@ -43,6 +43,12 @@ class ProxyTests(unittest.TestCase):
 
         self.assertRaises(Exception, ActorProxy)
 
+    def testUUIDConstructor(self):
+        """ Create a proxy for a given UUID. """
+
+        proxy = ActorProxy(uuid='noexist_proxy')
+        self.assertEqual('noexist_proxy', proxy.uuid)
+
     def testMethodExists(self):
         """ Ensure that the 'test' method of MyActor has been proxied. """
 
