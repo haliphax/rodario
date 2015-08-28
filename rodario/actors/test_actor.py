@@ -12,7 +12,7 @@ from rodario.actors import Actor
 
 # pylint: disable=I0011,R0201
 
-class TestActor(Actor):
+class ActorTestActor(Actor):
 
     """ Stubbed Actor class for testing """
 
@@ -36,7 +36,7 @@ class ActorTests(unittest.TestCase):
     def setUpClass(cls):
         """ Create an Actor object, redis connection, and pubsub client. """
 
-        cls.actor = TestActor('noexist_actor')
+        cls.actor = ActorTestActor('noexist_actor')
         cls.actor.start()
         cls.redis = redis.StrictRedis()
         cls.pubsub = cls.redis.pubsub()
@@ -50,13 +50,13 @@ class ActorTests(unittest.TestCase):
     def testGeneratedUUID(self):
         """ Create an actor with an automatically-generated UUID. """
 
-        actor = TestActor()
+        actor = ActorTestActor()
         self.assertTrue(isinstance(actor.uuid, str))
 
     def testTakenUUID(self):
         """ Raise Exception when uuid is already taken. """
 
-        self.assertRaises(Exception, TestActor, **{'uuid': 'noexist_actor'})
+        self.assertRaises(Exception, ActorTestActor, **{'uuid': 'noexist_actor'})
 
     def testMethodCall(self):
         """ Call the Actor's methods. """

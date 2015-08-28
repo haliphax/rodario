@@ -1,6 +1,7 @@
 """ Actor for rodario framework """
 
 # stdlib
+import atexit
 from uuid import uuid4
 from time import sleep
 from threading import Thread, Event
@@ -10,7 +11,13 @@ import inspect
 # 3rd party
 import redis
 
+# local
+from rodario.registry import Registry
 
+REGISTRY = Registry()
+
+
+# pylint: disable=I0011,E1101
 class Actor(object):
 
     """ Base Actor class """
@@ -26,6 +33,7 @@ class Actor(object):
         :param str uuid: Optionally-provided UUID
         """
 
+        atexit.register(self.__del__)
         self._stop = Event()
         #: Separate Thread for handling messages
         self._proc = None
@@ -38,16 +46,21 @@ class Actor(object):
         self._pubsub = self._redis.pubsub(ignore_subscribe_messages=True)
 
         if uuid:
-            # if custom UUID is provided, check for existence first
-            if self._redis.publish('actor:%s' % uuid, None):
-                raise Exception('Actor exists')
-
             self.uuid = uuid
         else:
             self.uuid = str(uuid4())
 
+        if not REGISTRY.exists(self.uuid):
+            REGISTRY.register(self.uuid)
+        else:
+            self.uuid = None
+            raise Exception('UUID is already taken')
+
     def __del__(self):
         """ Clean up. """
+
+        if hasattr(self, 'uuid'):
+            REGISTRY.unregister(self.uuid)
 
         self.stop()
 
@@ -115,19 +128,16 @@ class Actor(object):
     def start(self):
         """ Fire up the message handler thread. """
 
-        def pubsub_thread(pubsub):
+        def pubsub_thread():
             """ Call get_message in loop to fire _handler. """
 
-            try:
-                while not self._stop.is_set():
-                    pubsub.get_message()
-                    sleep(0.01)
-            except TypeError:
-                pass
+            while not self._stop.is_set():
+                self._pubsub.get_message()
+                sleep(0.01)
 
         # subscribe to personal channel and fire up the message handler
         self._pubsub.subscribe(**{'actor:%s' % self.uuid: self._handler})
-        self._proc = Thread(target=pubsub_thread, args=(self._pubsub,))
+        self._proc = Thread(target=pubsub_thread)
         self._proc.daemon = True
         self._proc.start()
 
