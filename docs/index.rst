@@ -1,18 +1,26 @@
-.. rodario documentation master file, created by
-   sphinx-quickstart on Tue Jul 28 22:49:31 2015.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+rodario
+=======
 
-Welcome to rodario's documentation!
-===================================
+A simple, redis-backed Python actor framework
 
 * `Homepage <https://github.com/haliphax/rodario>`_
-* `Build status <https://semaphoreci.com/haliphax/rodario>`_
 
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
+
+.. autoclass:: rodario.registry.Registry
+    :members:
+    :undoc-members:
+
+    .. automethod:: rodario.registry.Registry.__new__
+
+.. autoclass:: rodario.registry._Singleton
+    :members:
+    :undoc-members:
+
+    .. automethod:: rodario.registry._Singleton.__init__
 
 .. autoclass:: rodario.actors.Actor
     :members:
