@@ -9,6 +9,7 @@ from rodario.actors import Actor, ActorProxy
 
 # pylint: disable=I0011,R0201
 
+
 class TestActor(Actor):
 
     """ Stubbed Actor class for testing """
@@ -73,6 +74,14 @@ class ProxyTests(unittest.TestCase):
         response = self.proxy.test().get(timeout=1)
         self.assertEqual(1, response)
 
+    def testInvalidProxy(self):
+        """ Raise Exception when proxying to an invalid actor. """
+
+        newactor = Actor()
+        falseproxy = newactor.proxy()
+        del newactor
+        # pylint: disable=I0011,W0212
+        self.assertRaises(Exception, falseproxy._proxy, None)
 
 if __name__ == '__main__':
     unittest.main()
