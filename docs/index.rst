@@ -33,6 +33,7 @@ Contents:
     :undoc-members:
 
     .. automethod:: rodario.actors.ActorProxy.__init__
+    .. automethod:: rodario.actors.ActorProxy._proxy
 
 Indices and tables
 ==================
