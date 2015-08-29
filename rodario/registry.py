@@ -79,7 +79,7 @@ class Registry(object):
         """
         Retrieve the singleton instance for Registry.
 
-        :rtype: :class:`rodario.registry.Registry._Singleton`
+        :rtype: :class:`rodario.registry._Singleton`
         """
 
         if not cls._instance:
