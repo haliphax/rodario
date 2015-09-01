@@ -47,7 +47,7 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
         def pubsub_thread():
             """ Call get_message in loop to fire _handler. """
 
-            while True:
+            while True and self._pubsub:
                 self._pubsub.get_message()
                 sleep(0.01)
 
