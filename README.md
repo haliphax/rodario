@@ -4,6 +4,8 @@
 
 Simple, redis-backed Python actor framework
 
+![Logo](https://oddnetwork.org/hx/rodario.png)
+
 ## Links
 
 - [PyPI](https://pypi.python.org/pypi/rodario)
