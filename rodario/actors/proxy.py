@@ -107,7 +107,7 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
         :param str method_name: The method to proxy
         :param tuple args: The arguments to pass
         :param dict kwargs: The keyword arguments to pass
-        :rtype: :class:`multiprocessing.queues.Queue`
+        :rtype: :class:`multiprocessing.Queue`
         """
 
         # create a unique response queue for retrieving the return value async
