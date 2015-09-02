@@ -104,6 +104,10 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
         """
         Proxy a method call to redis pubsub.
 
+        This method is not meant to be called directly. Instead, it is used
+        by the proxy's self-generated methods to provide the proxy with the
+        same public API as the actor it is proxying.
+
         :param str method_name: The method to proxy
         :param tuple args: The arguments to pass
         :param dict kwargs: The keyword arguments to pass
