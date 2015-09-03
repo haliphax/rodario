@@ -39,10 +39,8 @@ class Actor(object):
         self._proc = None
         #: Redis connection
         self._redis = redis.StrictRedis()
-        #: Redis PubSub client
-        self._pubsub = None
-
         # pylint: disable=I0011,E1123
+        #: Redis PubSub client
         self._pubsub = self._redis.pubsub(ignore_subscribe_messages=True)
 
         if uuid:
