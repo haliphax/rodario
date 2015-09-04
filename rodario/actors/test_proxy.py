@@ -7,9 +7,8 @@ import multiprocessing.queues
 # local
 from rodario.actors import Actor, ActorProxy
 
+
 # pylint: disable=I0011,R0201
-
-
 class TestActor(Actor):
 
     """ Stubbed Actor class for testing """
@@ -82,6 +81,14 @@ class ProxyTests(unittest.TestCase):
         del newactor
         # pylint: disable=I0011,W0212
         self.assertRaises(Exception, falseproxy._proxy, None)
+
+    def testMissingPubSub(self):
+        """ Fail silently when _pubsub is deleted (simulates shutdown). """
+
+        newactor = Actor()
+        newactor.start()
+        proxy = newactor.proxy()
+        del proxy._pubsub
 
 if __name__ == '__main__':
     unittest.main()

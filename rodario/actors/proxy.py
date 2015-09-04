@@ -83,9 +83,6 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
 
         # create proxy methods for each public method of the original Actor
         for name in methods:
-            if name[0] == '_':
-                continue
-
             name_split = name.split(':')
 
             for attr in name_split[1:]:

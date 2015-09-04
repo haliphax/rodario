@@ -26,6 +26,8 @@ class Actor(object):
     #: Threading Event to tell the message handling loop to die
     # (needed in __del__ so must be defined here)
     _stop = None
+    #: Redis PubSub client
+    _pubsub = None
 
     def __init__(self, uuid=None):
         """
@@ -41,7 +43,6 @@ class Actor(object):
         #: Redis connection
         self._redis = redis.StrictRedis()
         # pylint: disable=I0011,E1123
-        #: Redis PubSub client
         self._pubsub = self._redis.pubsub(ignore_subscribe_messages=True)
 
         if uuid:
