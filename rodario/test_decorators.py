@@ -6,6 +6,7 @@ import unittest
 # local
 from rodario.actors import Actor
 from rodario.decorators import blocking
+from rodario.registry import Registry
 
 
 # pylint: disable=I0011,R0201
@@ -32,15 +33,17 @@ class DecoratorsTests(unittest.TestCase):
         cls.actor = TestActor(uuid='noexist_decorator')
         cls.actor.start()
         cls.proxy = cls.actor.proxy()
+        cls.registry = Registry()
 
     @classmethod
     def tearDownClass(cls):
         """ Kill the actor. """
 
         cls.actor.stop()
+        cls.registry.unregister('noexist_actor')  # pylint: disable=I0011,E1101
 
-    def testDecoratedMethod(self):
-        """ Fire the decorated method and make sure the result matches. """
+    def testBlockingMethod(self):
+        """ Fire the @blocking method and make sure the result is valid. """
 
         self.assertEqual(1, self.proxy.test())
 
