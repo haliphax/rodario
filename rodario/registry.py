@@ -14,6 +14,7 @@ class _Singleton(object):
 
         self._redis = redis.StrictRedis()
 
+    @property
     def actors(self):
         """
         Retrieve a list of registered actors.

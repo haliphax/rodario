@@ -74,8 +74,7 @@ class RegistryTests(unittest.TestCase):
         """ Test that a valid list of actors is returned upon request. """
 
         self.registry.register('noexist_registry')
-        actors = self.registry.actors()
-        self.assertSetEqual(actors, set(('noexist_registry',)))
+        self.assertSetEqual(self.registry.actors, set(('noexist_registry',)))
         self.registry.unregister('noexist_registry')
 
 if __name__ == '__main__':
