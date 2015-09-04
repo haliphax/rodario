@@ -5,10 +5,11 @@ A simple, redis-backed Python actor framework
 
 * `Homepage <https://github.com/haliphax/rodario>`_
 
-Contents:
-
 .. toctree::
     :maxdepth: 2
+
+The Registry
+------------
 
 .. autoclass:: rodario.registry.Registry
     :members:
@@ -22,6 +23,9 @@ Contents:
 
     .. automethod:: rodario.registry._Singleton.__init__
 
+Actors and Proxies
+------------------
+
 .. autoclass:: rodario.actors.Actor
     :members:
     :undoc-members:
@@ -34,6 +38,9 @@ Contents:
 
     .. automethod:: rodario.actors.ActorProxy.__init__
     .. automethod:: rodario.actors.ActorProxy._proxy
+
+Decorators
+----------
 
 .. autofunction:: rodario.decorators.blocking
 
