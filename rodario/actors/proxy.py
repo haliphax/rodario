@@ -1,7 +1,6 @@
 """ Actor proxy for rodario framework """
 
 # stdlib
-import inspect
 import types
 import pickle
 from multiprocessing import Queue
@@ -41,15 +40,30 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
         # pylint: disable=I0011,E1123
         self._pubsub = self._redis.pubsub(ignore_subscribe_messages=True)
         self._pubsub.subscribe(**{'proxy:%s' % self.proxyid: self._handler})
+        # list of blocking methods
+        self._blocking_methods = set()
 
-        methods = []
+        methods = set()
 
         def pubsub_thread():
             """ Call get_message in loop to fire _handler. """
 
+<<<<<<< Updated upstream
             while self._pubsub:
+=======
+<<<<<<< Updated upstream
+            while True:
+>>>>>>> Stashed changes
                 self._pubsub.get_message()
                 sleep(0.01)
+=======
+            try:
+                while self._pubsub:
+                    self._pubsub.get_message()
+                    sleep(0.001)
+            except:  # pylint: disable=I0011,W0702
+                pass
+>>>>>>> Stashed changes
 
         # fire up the message handler thread as a daemon
         proc = Thread(target=pubsub_thread)
@@ -59,14 +73,11 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
         if isinstance(actor, actor_module.Actor):
             # proxying an Actor directly
             self.uuid = actor.uuid
-            methods = inspect.getmembers(actor, predicate=inspect.ismethod)
+            methods = actor._get_methods()  # pylint: disable=I0011,W0212
         elif isinstance(uuid, str):
             # proxying by UUID; get actor methods over pubsub
             self.uuid = uuid
-            pre_methods = self._proxy('_get_methods').get()
-
-            for name in pre_methods:
-                methods.append((name, None,))
+            methods = self._proxy('_get_methods').get()
         else:
             raise Exception('No actor or UUID provided')
 
@@ -81,11 +92,18 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
             return lambda _, *args, **kwargs: self._proxy(name, *args, **kwargs)
 
         # create proxy methods for each public method of the original Actor
-        for name, _ in methods:
+        for name in methods:
             if name[0] == '_':
                 continue
 
-            setattr(self, name, types.MethodType(get_lambda(name), self))
+            name_split = name.split(':')
+
+            for attr in name_split[1:]:
+                if attr == 'blocking':
+                    self._blocking_methods.add(name_split[0])
+
+            setattr(self, name_split[0],
+                    types.MethodType(get_lambda(name_split[0]), self))
 
     def _handler(self, message):
         """
@@ -126,5 +144,8 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
             raise Exception('No such actor')
 
         self._response_queues[queue] = Queue()
+
+        if method_name in self._blocking_methods:
+            return self._response_queues[queue].get()
 
         return self._response_queues[queue]

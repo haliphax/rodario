@@ -13,6 +13,7 @@ import redis
 
 # local
 from rodario.registry import Registry
+from rodario.decorators import BlockingMethod
 
 REGISTRY = Registry()
 
@@ -99,15 +100,20 @@ class Actor(object):
         :rtype: :class:`list`
         """
 
-        methods = inspect.getmembers(self, predicate=inspect.ismethod)
-        method_list = []
+        methods = inspect.getmembers(self, predicate=callable)
+        method_list = set()
 
-        for name, _ in methods:
+        for name, method in methods:
             if (name in ('proxy', '_get_methods', 'start', 'stop',)
                     or name[0] == '_'):
                 continue
 
-            method_list.append(name)
+            attrs = ''
+
+            if isinstance(method, BlockingMethod):
+                attrs += ':blocking'
+
+            method_list.add('{name}{attrs}'.format(name=name, attrs=attrs))
 
         return method_list
 
