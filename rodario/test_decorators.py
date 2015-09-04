@@ -9,7 +9,7 @@ from rodario.decorators import blocking
 from rodario.registry import Registry
 
 
-# pylint: disable=I0011,R0201
+# pylint: disable=R0201
 class TestActor(Actor):
 
     """ Stubbed Actor class for testing """
@@ -21,7 +21,7 @@ class TestActor(Actor):
         return 1
 
 
-# pylint: disable=I0011,C0103,R0904
+# pylint: disable=C0103,R0904
 class DecoratorsTests(unittest.TestCase):
 
     """ Decorators unit tests """
@@ -40,7 +40,7 @@ class DecoratorsTests(unittest.TestCase):
         """ Kill the actor. """
 
         cls.actor.stop()
-        cls.registry.unregister('noexist_actor')  # pylint: disable=I0011,E1101
+        cls.registry.unregister('noexist_actor')  # pylint: disable=E1101
 
     def testBlockingMethod(self):
         """ Fire the @blocking method and make sure the result is valid. """

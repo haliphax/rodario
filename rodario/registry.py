@@ -4,7 +4,7 @@
 import redis
 
 
-# pylint: disable=I0011,C1001
+# pylint: disable=C1001
 class _Singleton(object):
 
     """ Singleton for actor registry """
@@ -53,7 +53,7 @@ class _Singleton(object):
 
         return self._redis.sismember('actors', uuid) == 1
 
-    # pylint: disable=I0011,R0201
+    # pylint: disable=R0201
     def get_proxy(self, uuid):
         """
         Return an ActorProxy for the given UUID.
@@ -69,7 +69,7 @@ class _Singleton(object):
         return proxy_module.ActorProxy(uuid=uuid)
 
 
-# pylint: disable=I0011,R0903
+# pylint: disable=R0903
 class Registry(object):
 
     """ Actor registry class (singleton wrapper) """

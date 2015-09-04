@@ -11,7 +11,7 @@ import redis
 from rodario.registry import Registry
 from rodario.actors import Actor
 
-# pylint: disable=I0011,R0201
+# pylint: disable=R0201
 
 class ActorTestActor(Actor):
 
@@ -28,7 +28,7 @@ class ActorTestActor(Actor):
         return 2
 
 
-# pylint: disable=I0011,R0904,C0103,W0212
+# pylint: disable=R0904,C0103,W0212
 class ActorTests(unittest.TestCase):
 
     """ Actor unit tests """
@@ -48,7 +48,7 @@ class ActorTests(unittest.TestCase):
         """ Kill the actor. """
 
         cls.actor.stop()
-        cls.registry.unregister('noexist_actor')  # pylint: disable=I0011,E1101
+        cls.registry.unregister('noexist_actor')  # pylint: disable=E1101
 
     def testGeneratedUUID(self):
         """ Create an actor with an automatically-generated UUID. """
@@ -92,7 +92,7 @@ class ActorTests(unittest.TestCase):
         count = self.redis.publish('actor:noexist_actor',
                                    ('noexist_actor', 'test', (), {}))
         self.assertEqual(1, count)
-        message = self.pubsub.get_message()  # pylint: disable=I0011,E1101
+        message = self.pubsub.get_message()  # pylint: disable=E1101
         self.assertEqual(message['channel'], 'proxy:noexist_actor')
         self.assertEqual(1, message['data'])
         self.pubsub.unsubscribe('proxy:noexist_actor')

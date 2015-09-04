@@ -18,7 +18,7 @@ class RegistryTestActor(Actor):
         super(RegistryTestActor, self).__init__()
 
 
-# pylint: disable=I0011,C0103,E1101
+# pylint: disable=C0103,E1101
 class RegistryTests(unittest.TestCase):
 
     """ Registry unit tests """

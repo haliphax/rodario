@@ -9,7 +9,7 @@ from rodario.registry import Registry
 from rodario.actors import Actor, ActorProxy
 
 
-# pylint: disable=I0011,R0201
+# pylint: disable=R0201
 class TestActor(Actor):
 
     """ Stubbed Actor class for testing """
@@ -20,7 +20,7 @@ class TestActor(Actor):
         return 1
 
 
-# pylint: disable=I0011,C0103,R0904
+# pylint: disable=C0103,R0904
 class ProxyTests(unittest.TestCase):
 
     """ ActorProxy unit tests """
@@ -39,7 +39,7 @@ class ProxyTests(unittest.TestCase):
         """ Kill the Actor. """
 
         cls.actor.stop()
-        cls.registry.unregister('noexist_proxy')  # pylint: disable=I0011,E1101
+        cls.registry.unregister('noexist_proxy')  # pylint: disable=E1101
 
     def testNoParametersInConstructor(self):
         """ Raise Exception when no constructor parameters are passed. """
@@ -65,14 +65,14 @@ class ProxyTests(unittest.TestCase):
     def testProxyResponseIsQueue(self):
         """ Validate that the object returned from a proxy call is a Queue. """
 
-        response = self.proxy.test()  # pylint: disable=I0011,E1101
+        response = self.proxy.test()  # pylint: disable=E1101
         self.assertTrue(isinstance(response, multiprocessing.queues.Queue))
         response.get(timeout=1)
 
     def testProxyCallAndResponse(self):
         """ Validate the return value of MyActor.test. """
 
-        # pylint: disable=I0011,E1101
+        # pylint: disable=E1101
         response = self.proxy.test().get(timeout=1)
         self.assertEqual(1, response)
 
@@ -82,7 +82,7 @@ class ProxyTests(unittest.TestCase):
         newactor = Actor()
         falseproxy = newactor.proxy()
         del newactor
-        # pylint: disable=I0011,W0212
+        # pylint: disable=W0212
         self.assertRaises(Exception, falseproxy._proxy, None)
 
     def testMissingPubSub(self):

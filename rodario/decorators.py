@@ -1,7 +1,7 @@
 """ Function decorators for rodario framework """
 
 
-# pylint: disable=I0011,R0903
+# pylint: disable=R0903
 class BlockingMethod(object):
 
     """ Blocking proxy method """

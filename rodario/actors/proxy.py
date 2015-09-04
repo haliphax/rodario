@@ -12,7 +12,7 @@ from time import sleep
 import redis
 
 
-class ActorProxy(object):  # pylint: disable=I0011,R0903
+class ActorProxy(object):  # pylint: disable=R0903
 
     """ Proxy object that fires calls to an actor over redis pubsub """
 
@@ -37,7 +37,7 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
 
         # avoid cyclic import
         actor_module = __import__('rodario.actors', fromlist=('Actor',))
-        # pylint: disable=I0011,E1123
+        # pylint: disable=E1123
         self._pubsub = self._redis.pubsub(ignore_subscribe_messages=True)
         self._pubsub.subscribe(**{'proxy:%s' % self.proxyid: self._handler})
         # list of blocking methods
@@ -52,7 +52,7 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
                 while self._pubsub:
                     self._pubsub.get_message()
                     sleep(0.001)
-            except:  # pylint: disable=I0011,W0702
+            except:  # pylint: disable=W0702
                 pass
 
         # fire up the message handler thread as a daemon
@@ -63,7 +63,7 @@ class ActorProxy(object):  # pylint: disable=I0011,R0903
         if isinstance(actor, actor_module.Actor):
             # proxying an Actor directly
             self.uuid = actor.uuid
-            methods = actor._get_methods()  # pylint: disable=I0011,W0212
+            methods = actor._get_methods()  # pylint: disable=W0212
         elif isinstance(uuid, str):
             # proxying by UUID; get actor methods over pubsub
             self.uuid = uuid
