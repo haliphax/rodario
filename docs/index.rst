@@ -35,6 +35,8 @@ Contents:
     .. automethod:: rodario.actors.ActorProxy.__init__
     .. automethod:: rodario.actors.ActorProxy._proxy
 
+.. autofunction:: rodario.decorators.blocking
+
 Indices and tables
 ==================
 
