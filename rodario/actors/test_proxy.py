@@ -5,6 +5,7 @@ import unittest
 import multiprocessing.queues
 
 # local
+from rodario.registry import Registry
 from rodario.actors import Actor, ActorProxy
 
 
@@ -28,6 +29,7 @@ class ProxyTests(unittest.TestCase):
     def setUpClass(cls):
         """ Create an Actor and an ActorProxy for it. """
 
+        cls.registry = Registry()
         cls.actor = TestActor(uuid='noexist_proxy')
         cls.actor.start()
         cls.proxy = cls.actor.proxy()
@@ -37,6 +39,7 @@ class ProxyTests(unittest.TestCase):
         """ Kill the Actor. """
 
         cls.actor.stop()
+        cls.registry.unregister('noexist_proxy')  # pylint: disable=I0011,E1101
 
     def testNoParametersInConstructor(self):
         """ Raise Exception when no constructor parameters are passed. """

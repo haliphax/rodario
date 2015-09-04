@@ -29,10 +29,15 @@ class RegistryTests(unittest.TestCase):
 
         cls.registry = Registry()
 
+    @classmethod
+    def tearDownClass(cls):
+        """ Be sure that our actors are not registered. """
+
+        cls.registry.unregister('noexist_registry')
+
     def testUnregisterActor(self):
         """ Register and unregister a UUID. """
 
-        self.registry.unregister('noexist_registry')
         self.registry.register('noexist_registry')
         self.registry.unregister('noexist_registry')
 

@@ -8,6 +8,7 @@ import pickle
 import redis
 
 # local
+from rodario.registry import Registry
 from rodario.actors import Actor
 
 # pylint: disable=I0011,R0201
@@ -36,6 +37,7 @@ class ActorTests(unittest.TestCase):
     def setUpClass(cls):
         """ Create an Actor object, redis connection, and pubsub client. """
 
+        cls.registry = Registry()
         cls.actor = ActorTestActor('noexist_actor')
         cls.actor.start()
         cls.redis = redis.StrictRedis()
@@ -46,6 +48,7 @@ class ActorTests(unittest.TestCase):
         """ Kill the actor. """
 
         cls.actor.stop()
+        cls.registry.unregister('noexist_actor')  # pylint: disable=I0011,E1101
 
     def testGeneratedUUID(self):
         """ Create an actor with an automatically-generated UUID. """
