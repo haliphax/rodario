@@ -39,6 +39,10 @@ Actors and Proxies
     .. automethod:: rodario.actors.ActorProxy.__init__
     .. automethod:: rodario.actors.ActorProxy._proxy
 
+.. autoclass:: rodario.future.Future
+    :members:
+    :undoc-members:
+
 Decorators
 ----------
 
