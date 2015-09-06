@@ -2,11 +2,12 @@
 
 # stdlib
 import unittest
-import multiprocessing.queues
+from time import sleep
 
 # local
 from rodario.registry import Registry
 from rodario.actors import Actor, ActorProxy
+from rodario.future import Future
 
 
 # pylint: disable=R0201
@@ -16,6 +17,13 @@ class TestActor(Actor):
 
     def test(self):
         """ Simple method call. """
+
+        return 1
+
+    def delay(self):
+        """ Delayed method call for testing ready property of Future. """
+
+        sleep(1)
 
         return 1
 
@@ -62,12 +70,19 @@ class ProxyTests(unittest.TestCase):
 
         self.assertEqual('noexist_proxy', self.proxy.uuid)
 
-    def testProxyResponseIsQueue(self):
-        """ Validate that the object returned from a proxy call is a Queue. """
+    def testProxyResponseIsFuture(self):
+        """ Validate that the object returned from a proxy call is a Future. """
 
         response = self.proxy.test()  # pylint: disable=E1101
-        self.assertTrue(isinstance(response, multiprocessing.queues.Queue))
+        self.assertTrue(isinstance(response, Future))
         response.get(timeout=1)
+
+    def testProxyDelayedFuture(self):
+        """ Validate that the ready property of the Future is accurate. """
+
+        response = self.proxy.delay()
+        self.assertFalse(response.ready)
+        response.get(timeout=2)
 
     def testProxyCallAndResponse(self):
         """ Validate the return value of MyActor.test. """

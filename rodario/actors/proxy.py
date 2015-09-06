@@ -11,6 +11,9 @@ from time import sleep
 # 3rd party
 import redis
 
+# local
+from rodario.future import Future
+
 
 class ActorProxy(object):  # pylint: disable=R0903
 
@@ -135,4 +138,4 @@ class ActorProxy(object):  # pylint: disable=R0903
         if method_name in self._blocking_methods:
             return self._response_queues[queue].get()
 
-        return self._response_queues[queue]
+        return Future(self._response_queues[queue])

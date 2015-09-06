@@ -1,7 +1,5 @@
 """ Future response type for rodario framework """
 
-from multiprocessing import Queue
-
 
 class Future(object):
 
@@ -26,11 +24,11 @@ class Future(object):
 
         return not self._queue.empty()
 
-    def get(self):
+    def get(self, *args, **kwargs):
         """
         Resolve and return the proxied method call's value.
 
         :rtype: mixed
         """
 
-        return self._queue.get()
+        return self._queue.get(*args, **kwargs)
