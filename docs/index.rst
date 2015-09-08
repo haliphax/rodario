@@ -48,6 +48,14 @@ Decorators
 
 .. autofunction:: rodario.decorators.blocking
 
+Exceptions
+----------
+
+.. autoclass:: rodario.exceptions.InvalidActorException
+.. autoclass:: rodario.exceptions.InvalidProxyException
+.. autoclass:: rodario.exceptions.UUIDInUseException
+.. autoclass:: rodario.exceptions.RegistrationException
+
 Indices and tables
 ==================
 
