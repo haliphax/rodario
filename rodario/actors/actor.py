@@ -14,6 +14,7 @@ import redis
 # local
 from rodario.registry import Registry
 from rodario.decorators import BlockingMethod
+from rodario.exceptions import UUIDInUseException
 
 REGISTRY = Registry()
 
@@ -54,7 +55,7 @@ class Actor(object):
             REGISTRY.register(self.uuid)
         else:
             self.uuid = None
-            raise Exception('UUID is already taken')
+            raise UUIDInUseException('UUID is already taken')
 
     def __del__(self):
         """ Clean up. """

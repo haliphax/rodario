@@ -3,6 +3,9 @@
 # 3rd party
 import redis
 
+# local
+from rodario.exceptions import RegistrationException
+
 
 # pylint: disable=C1001
 class _Singleton(object):
@@ -32,7 +35,7 @@ class _Singleton(object):
         """
 
         if self._redis.sadd('actors', uuid) == 0:
-            raise Exception('Failed adding member to set')
+            raise RegistrationException('Failed adding member to set')
 
     def unregister(self, uuid):
         """

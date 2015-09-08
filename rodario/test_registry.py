@@ -6,6 +6,7 @@ import unittest
 # local
 from rodario.actors import Actor, ActorProxy
 from rodario.registry import Registry
+from rodario.exceptions import RegistrationException
 
 
 class RegistryTestActor(Actor):
@@ -45,7 +46,8 @@ class RegistryTests(unittest.TestCase):
         """ Try to register a UUID that has already been registered. """
 
         self.registry.register('noexist_registry')
-        self.assertRaises(Exception, self.registry.register, 'noexist_registry')
+        self.assertRaises(RegistrationException, self.registry.register,
+                          'noexist_registry')
         self.registry.unregister('noexist_registry')
 
     def testDoesNotExist(self):

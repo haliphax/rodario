@@ -13,6 +13,7 @@ import redis
 
 # local
 from rodario.future import Future
+from rodario.exceptions import InvalidActorException, InvalidProxyException
 
 
 class ActorProxy(object):  # pylint: disable=R0903
@@ -72,7 +73,7 @@ class ActorProxy(object):  # pylint: disable=R0903
             self.uuid = uuid
             methods = self._proxy('_get_methods').get()
         else:
-            raise Exception('No actor or UUID provided')
+            raise InvalidProxyException('No actor or UUID provided')
 
         def get_lambda(name):
             """
@@ -131,7 +132,7 @@ class ActorProxy(object):  # pylint: disable=R0903
                                                   kwargs,)))
 
         if count == 0:
-            raise Exception('No such actor')
+            raise InvalidActorException('No such actor')
 
         self._response_queues[queue] = Queue()
 

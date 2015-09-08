@@ -8,4 +8,5 @@ local/
 rodario.egg-info/
 src/
 *.pyc
+*.pye
 .coverage

@@ -10,10 +10,11 @@ import redis
 # local
 from rodario.registry import Registry
 from rodario.actors import Actor
+from rodario.exceptions import UUIDInUseException
 
-# pylint: disable=R0201
 
 class ActorTestActor(Actor):
+    # pylint: disable=R0201
 
     """ Stubbed Actor class for testing """
 
@@ -28,8 +29,8 @@ class ActorTestActor(Actor):
         return 2
 
 
-# pylint: disable=R0904,C0103,W0212
 class ActorTests(unittest.TestCase):
+    # pylint: disable=R0904,C0103,W0212
 
     """ Actor unit tests """
 
@@ -57,9 +58,10 @@ class ActorTests(unittest.TestCase):
         self.assertTrue(isinstance(actor.uuid, str))
 
     def testTakenUUID(self):
-        """ Raise Exception when uuid is already taken. """
+        """ Raise UUIDInUseException when uuid is already taken. """
 
-        self.assertRaises(Exception, ActorTestActor, **{'uuid': 'noexist_actor'})
+        self.assertRaises(UUIDInUseException, ActorTestActor,
+                          **{'uuid': 'noexist_actor'})
 
     def testMethodCall(self):
         """ Call the Actor's methods. """

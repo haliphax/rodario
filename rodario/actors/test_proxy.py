@@ -8,6 +8,7 @@ from time import sleep
 from rodario.registry import Registry
 from rodario.actors import Actor, ActorProxy
 from rodario.future import Future
+from rodario.exceptions import InvalidActorException, InvalidProxyException
 
 
 # pylint: disable=R0201
@@ -50,9 +51,11 @@ class ProxyTests(unittest.TestCase):
         cls.registry.unregister('noexist_proxy')  # pylint: disable=E1101
 
     def testNoParametersInConstructor(self):
-        """ Raise Exception when no constructor parameters are passed. """
+        """
+        Raise InvalidProxyException when no constructor parameters are passed.
+        """
 
-        self.assertRaises(Exception, ActorProxy)
+        self.assertRaises(InvalidProxyException, ActorProxy)
 
     def testUUIDConstructor(self):
         """ Create a proxy for a given UUID. """
@@ -92,13 +95,13 @@ class ProxyTests(unittest.TestCase):
         self.assertEqual(1, response)
 
     def testInvalidProxy(self):
-        """ Raise Exception when proxying to an invalid actor. """
+        """ Raise InvalidActorException when proxying to an invalid actor. """
 
         newactor = Actor()
         falseproxy = newactor.proxy()
         del newactor
         # pylint: disable=W0212
-        self.assertRaises(Exception, falseproxy._proxy, None)
+        self.assertRaises(InvalidActorException, falseproxy._proxy, None)
 
     def testMissingPubSub(self):
         """ Fail silently when _pubsub is deleted (simulates shutdown). """
