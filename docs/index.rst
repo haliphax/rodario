@@ -17,11 +17,11 @@ The Registry
 
     .. automethod:: rodario.registry.Registry.__new__
 
-.. autoclass:: rodario.registry._Singleton
+.. autoclass:: rodario.registry._RegistrySingleton
     :members:
     :undoc-members:
 
-    .. automethod:: rodario.registry._Singleton.__init__
+    .. automethod:: rodario.registry._RegistrySingleton.__init__
 
 Actors and Proxies
 ------------------

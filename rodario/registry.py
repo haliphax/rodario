@@ -8,7 +8,7 @@ from rodario.exceptions import RegistrationException
 
 
 # pylint: disable=C1001
-class _Singleton(object):
+class _RegistrySingleton(object):
 
     """ Singleton for actor registry """
 
@@ -87,6 +87,6 @@ class Registry(object):
         """
 
         if not cls._instance:
-            cls._instance = _Singleton()
+            cls._instance = _RegistrySingleton()
 
         return cls._instance
