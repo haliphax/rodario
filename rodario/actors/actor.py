@@ -106,7 +106,7 @@ class Actor(object):
         method_list = set()
 
         for name, method in methods:
-            if (name in ('proxy', 'start', 'stop',) or name[0] == '_'):
+            if name in ('proxy', 'start', 'stop',) or name[0] == '_':
                 continue
 
             attrs = ''
