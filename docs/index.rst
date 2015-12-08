@@ -13,13 +13,11 @@ The Registry
 
 .. autoclass:: rodario.registry.Registry
     :members:
-    :undoc-members:
 
     .. automethod:: rodario.registry.Registry.__new__
 
 .. autoclass:: rodario.registry._RegistrySingleton
     :members:
-    :undoc-members:
 
     .. automethod:: rodario.registry._RegistrySingleton.__init__
 
@@ -28,20 +26,19 @@ Actors and Proxies
 
 .. autoclass:: rodario.actors.Actor
     :members:
-    :undoc-members:
 
     .. automethod:: rodario.actors.Actor.__init__
 
 .. autoclass:: rodario.actors.ActorProxy
     :members:
-    :undoc-members:
 
     .. automethod:: rodario.actors.ActorProxy.__init__
     .. automethod:: rodario.actors.ActorProxy._proxy
 
 .. autoclass:: rodario.future.Future
     :members:
-    :undoc-members:
+
+    .. automethod:: rodario.future.Future.__init__
 
 Decorators
 ----------
