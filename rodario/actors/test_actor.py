@@ -99,6 +99,23 @@ class ActorTests(unittest.TestCase):
         self.assertEqual(1, message['data'])
         self.pubsub.unsubscribe('proxy:noexist_actor')
 
+    def testChannel(self):
+        """ Join and part a cluster channel. """
+
+        def handler(self, message):  # pylint: disable=W0613
+            """ Handle message. """
+
+            return True
+
+        self.actor.join('cluster_test', handler)
+        count = self.redis.publish('cluster:cluster_test',
+                                   ('cluster_test', 'test', (), {}))
+        self.assertEqual(1, count)
+        self.actor.part('cluster_test')
+        count = self.redis.publish('cluster:cluster_test',
+                                   ('cluster_test', 'test', (), {}))
+        self.assertEqual(0, count)
+
 
 if __name__ == '__main__':
     unittest.main()

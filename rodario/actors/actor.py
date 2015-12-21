@@ -106,7 +106,8 @@ class Actor(object):
         method_list = set()
 
         for name, method in methods:
-            if name in ('proxy', 'start', 'stop',) or name[0] == '_':
+            if (name in ('proxy', 'start', 'stop', 'part', 'join',)
+                    or name[0] == '_'):
                 continue
 
             attrs = ''
@@ -117,6 +118,25 @@ class Actor(object):
             method_list.add('{name}{attrs}'.format(name=name, attrs=attrs))
 
         return method_list
+
+    def join(self, channel, func):
+        """
+        Join this Actor to a pubsub cluster channel.
+
+        :param str channel: The channel to join
+        :param callable func: The message handler function
+        """
+
+        self._pubsub.subscribe(**{'cluster:%s' % channel: func})
+
+    def part(self, channel):
+        """
+        Remove this Actor from a pubsub cluster channel.
+
+        :param str channel: The channel to part
+        """
+
+        self._pubsub.unsubscribe('cluster:%s' % channel)
 
     def proxy(self):
         """
