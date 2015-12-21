@@ -108,12 +108,10 @@ class ActorTests(unittest.TestCase):
             return True
 
         self.actor.join('cluster_test', handler)
-        count = self.redis.publish('cluster:cluster_test',
-                                   ('cluster_test', 'test', (), {}))
+        count = self.redis.publish('cluster:cluster_test', 1)
         self.assertEqual(1, count)
         self.actor.part('cluster_test')
-        count = self.redis.publish('cluster:cluster_test',
-                                   ('cluster_test', 'test', (), {}))
+        count = self.redis.publish('cluster:cluster_test', 1)
         self.assertEqual(0, count)
 
 
