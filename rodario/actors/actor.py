@@ -13,7 +13,7 @@ import redis
 
 # local
 from rodario.registry import Registry
-from rodario.decorators import BlockingMethod
+from rodario.decorators import DecoratedMethod
 from rodario.exceptions import UUIDInUseException
 
 REGISTRY = Registry()
@@ -84,15 +84,15 @@ class Actor(object):
 
         data = pickle.loads(message['data'])
 
-        if not data[1]:
+        if not data[2]:
             # empty method call; bail out
             return
 
         # call the function and respond to the proxy object with return value
-        proxy = data[0]
-        queue = data[1]
+        uuid = data[0]
+        proxy = data[1]
         func = getattr(self, data[2])
-        result = (queue, func(*data[3], **data[4]),)
+        result = (uuid, func(*data[3], **data[4]))
         self._redis.publish('proxy:%s' % proxy, pickle.dumps(result))
 
     def _get_methods(self):
@@ -112,14 +112,14 @@ class Actor(object):
 
             attrs = ''
 
-            if isinstance(method, BlockingMethod):
-                attrs += ':blocking'
+            if isinstance(method, DecoratedMethod):
+                attrs += ':' + ':'.join(method.decorations)
 
             method_list.add('{name}{attrs}'.format(name=name, attrs=attrs))
 
         return method_list
 
-    def join(self, channel, func):
+    def join(self, channel, func=None):
         """
         Join this Actor to a pubsub cluster channel.
 
@@ -127,7 +127,9 @@ class Actor(object):
         :param callable func: The message handler function
         """
 
-        self._pubsub.subscribe(**{'cluster:%s' % channel: func})
+        self._pubsub.subscribe(**{'cluster:%s' % channel: func
+                                                          if func is not None
+                                                          else self._handler})
 
     def part(self, channel):
         """

@@ -36,9 +36,8 @@ class ActorProxy(object):  # pylint: disable=R0903
         self._pubsub = None
         #: This proxy object's UUID for creating unique channels
         self.proxyid = str(uuid4())
-        #: Dict of response queues for sandboxing method calls
+        #: Response queues for sandboxing method calls
         self._response_queues = {}
-
         # avoid cyclic import
         actor_module = __import__('rodario.actors', fromlist=('Actor',))
         # pylint: disable=E1123
@@ -105,9 +104,8 @@ class ActorProxy(object):  # pylint: disable=R0903
 
         # throw its value in the associated response queue
         data = pickle.loads(message['data'])
-        queue = data[0]
-        self._response_queues[queue].put(data[1])
-        self._response_queues.pop(queue, None)
+        self._response_queues[data[0]].put(data[1])
+        self._response_queues.pop(data[0])
 
     def _proxy(self, method_name, *args, **kwargs):
         """
@@ -123,20 +121,19 @@ class ActorProxy(object):  # pylint: disable=R0903
         :rtype: :class:`multiprocessing.Queue`
         """
 
-        # create a unique response queue for retrieving the return value async
-        queue = str(uuid4())
         # fire off the method call to the original Actor over pubsub
+        uuid = str(uuid4())
         count = self._redis.publish('actor:%s' % self.uuid,
-                                    pickle.dumps((self.proxyid, queue,
-                                                  method_name, args,
-                                                  kwargs,)))
+                                    pickle.dumps((uuid, self.proxyid,
+                                                  method_name, args, kwargs,)))
 
         if count == 0:
             raise InvalidActorException('No such actor')
 
-        self._response_queues[queue] = Queue()
+        queue = Queue()
+        self._response_queues[uuid] = queue
 
         if method_name in self._blocking_methods:
-            return self._response_queues[queue].get()
+            return queue.get()
 
-        return Future(self._response_queues[queue])
+        return Future(queue)

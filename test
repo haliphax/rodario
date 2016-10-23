@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+pylint setup.py rodario
+coverage run --source=rodario --omit="*/test_*" -m unittest discover
+coverage report

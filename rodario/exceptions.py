@@ -27,3 +27,9 @@ class RegistrationException(Exception):
     """ Raised when actor registration fails """
 
     pass
+
+class EmptyClusterException(Exception):
+
+    """ Raised when a message is passed to an empty cluster channel """
+
+    pass

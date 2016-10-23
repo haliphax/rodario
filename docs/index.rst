@@ -35,6 +35,12 @@ Actors and Proxies
     .. automethod:: rodario.actors.ActorProxy.__init__
     .. automethod:: rodario.actors.ActorProxy._proxy
 
+.. autoclass:: rodario.actors.ClusterProxy
+    :members:
+
+    .. automethod:: rodario.actors.ClusterProxy.__init__
+    .. automethod:: rodario.actors.ClusterProxy._proxy
+
 .. autoclass:: rodario.future.Future
     :members:
 
@@ -44,6 +50,7 @@ Decorators
 ----------
 
 .. autofunction:: rodario.decorators.blocking
+.. autofunction:: rodario.decorators.singular
 
 Exceptions
 ----------
@@ -52,6 +59,7 @@ Exceptions
 .. autoclass:: rodario.exceptions.InvalidProxyException
 .. autoclass:: rodario.exceptions.UUIDInUseException
 .. autoclass:: rodario.exceptions.RegistrationException
+.. autoclass:: rodario.exceptions.EmptyClusterException
 
 Indices and tables
 ==================

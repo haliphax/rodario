@@ -73,6 +73,8 @@ class ActorTests(unittest.TestCase):
         """ Pass a blank method to the actor. """
 
         self.assertIsNone(self.actor._handler({'data': pickle.dumps((None,
+                                                                     None,
+                                                                     None,
                                                                      None,))}))
 
     def testIsAlive(self):
