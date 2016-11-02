@@ -6,11 +6,36 @@ from time import time, sleep
 
 # local
 from rodario.actors import Actor, ClusterProxy
-from rodario.decorators import blocking, singular
+from rodario.decorators import blocking, singular, DecoratedMethod
 from rodario.registry import Registry
 
 # 3rd party
 import redis
+
+
+def after_hook(func):
+    """
+    After-hook method decorator for test purposes.
+
+    :param instancemethod func: The function to wrap
+    :rtype: :class:`rodario.decorators.DecoratedMethod`
+    """
+
+    # pylint: disable=W0613
+    def after_func(self, result, *args, **kwargs):
+        """ Return a different value. """
+
+        return 2
+
+    # if it's already a DecoratedMethod, just add to it
+    if isinstance(func, DecoratedMethod):
+        func.decorations.add('after_hook')
+        func.after.append(after_func)
+
+        return func
+
+    # otherwise, instantiate a new one with our wrapper/bindings by default
+    return DecoratedMethod(func, ('after_hook',), after=(after_func,))
 
 
 # pylint: disable=R0201
@@ -49,6 +74,12 @@ class TestActor(Actor):
         """ Test the lock sanity check. """
 
         return 3
+
+    @after_hook
+    def test_after_hook(self):
+        """ Test the after-hook binding. """
+
+        return 1
 
 
 # pylint: disable=C0103,R0904
@@ -116,6 +147,11 @@ class DecoratorsTests(unittest.TestCase):
         self.assertEqual(3, future.get(timeout=3))
         self.actor.part('decorators_test')
         self.costar.part('decorators_test')
+
+    def testAfterHook(self):
+        """ Test the after-hook DecoratedMethod binding. """
+
+        self.assertEqual(2, self.actor.test_after_hook())
 
 if __name__ == '__main__':
     unittest.main()
