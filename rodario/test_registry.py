@@ -31,15 +31,15 @@ class RegistryTests(unittest.TestCase):
         """ Grab the Registry singleton. """
 
         cls.registry = Registry(prefix='test.')
-        r = redis.StrictRedis()
-        r.delete('test.actors')
-        del r
+        cls.redis = redis.StrictRedis()
+        cls.redis.delete('test.actors')
 
     @classmethod
     def tearDownClass(cls):
         """ Be sure that our actors are not registered. """
 
         cls.registry.unregister('noexist_registry')
+        cls.redis.delete('test.actors')
 
     def testUnregisterActor(self):
         """ Register and unregister a UUID. """
