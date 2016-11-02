@@ -6,9 +6,14 @@ from setuptools import setup, find_packages
 
 if __name__ == '__main__':
     reqs = []
+    test_reqs = []
+    abspath = realpath(dirname(__file__))
 
-    with open(join(realpath(dirname(__file__)), 'requirements.txt')) as reqfile:
+    with open(join(abspath, 'requirements.txt')) as reqfile:
         reqs = reqfile.readlines()
+
+    with open(join(abspath, 'test_requirements.txt')) as reqfile:
+        test_reqs = reqfile.readlines()
 
     setup(
         name='rodario',
@@ -28,4 +33,7 @@ if __name__ == '__main__':
         keywords='actor framework',
         packages=find_packages(),
         install_requires=reqs,
+        extras_require={
+            'test': test_reqs,
+        }
     )
