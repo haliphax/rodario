@@ -13,6 +13,30 @@ from rodario.registry import Registry
 import redis
 
 
+def before_hook(func):
+    """
+    Before-hook method decorator for test purposes.
+
+    :param instancemethod func: The function to wrap
+    :rtype: :class:`rodario.decorators.DecoratedMethod`
+    """
+
+    # pylint: disable=W0613
+    def before_func(self, *args, **kwargs):
+        """ Return a different value. """
+
+        return 2
+
+    # if it's already a DecoratedMethod, just add to it
+    if isinstance(func, DecoratedMethod):
+        func.decorations.add('before_hook')
+        func.after.append(before_func)
+
+        return func
+
+    # otherwise, instantiate a new one with our wrapper/bindings by default
+    return DecoratedMethod(func, ('before_hook',), before=(before_func,))
+
 def after_hook(func):
     """
     After-hook method decorator for test purposes.
@@ -78,6 +102,12 @@ class TestActor(Actor):
     @after_hook
     def test_after_hook(self):
         """ Test the after-hook binding. """
+
+        return 1
+
+    @before_hook
+    def test_before_hook(self):
+        """ Test the before-hook binding. """
 
         return 1
 
@@ -147,6 +177,11 @@ class DecoratorsTests(unittest.TestCase):
         self.assertEqual(3, future.get(timeout=3))
         self.actor.part('decorators_test')
         self.costar.part('decorators_test')
+
+    def testBeforeHook(self):
+        """ Test the before-hook DecoratedMethod binding. """
+
+        self.assertEqual(2, self.actor.test_before_hook())
 
     def testAfterHook(self):
         """ Test the after-hook DecoratedMethod binding. """
