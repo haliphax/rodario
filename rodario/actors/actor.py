@@ -13,7 +13,6 @@ import redis
 
 # local
 from rodario.registry import Registry
-from rodario.decorators import DecoratedMethod
 from rodario.exceptions import UUIDInUseException
 
 REGISTRY = Registry()
@@ -105,17 +104,12 @@ class Actor(object):
         methods = inspect.getmembers(self, predicate=callable)
         method_list = set()
 
-        for name, method in methods:
+        for name, _ in methods:
             if (name in ('proxy', 'start', 'stop', 'part', 'join',)
                     or name[0] == '_'):
                 continue
 
-            attrs = ''
-
-            if isinstance(method, DecoratedMethod):
-                attrs += ':' + ':'.join(method.decorations)
-
-            method_list.add('{name}{attrs}'.format(name=name, attrs=attrs))
+            method_list.add(name)
 
         return method_list
 

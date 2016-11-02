@@ -54,7 +54,6 @@ Decorators
 
     .. automethod:: rodario.decorators.DecoratedMethod.__init__
 
-.. autofunction:: rodario.decorators.blocking
 .. autofunction:: rodario.decorators.singular
 
 Exceptions

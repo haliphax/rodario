@@ -95,18 +95,6 @@ class DecoratedMethod(object):
 
         return func
 
-def blocking(func):
-    """
-    Block the thread and return the proxied method call's result. This is
-    sloppy and needs some work - the actual blocking is done within the Actor
-    class after checking the method's decorations.
-
-    :param instancemethod func: The function to wrap
-    :rtype: :class:`rodario.decorators.DecoratedMethod`
-    """
-
-    return DecoratedMethod.decorate(func, ('blocking',))
-
 def singular(func):
     """
     First-come, first-served cluster channel call. Unlike the @blocking

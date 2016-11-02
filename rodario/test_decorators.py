@@ -6,7 +6,7 @@ from time import time, sleep
 
 # local
 from rodario.actors import Actor, ClusterProxy
-from rodario.decorators import blocking, singular, DecoratedMethod
+from rodario.decorators import singular, DecoratedMethod
 from rodario.registry import Registry
 
 # 3rd party
@@ -27,15 +27,9 @@ def before_hook(func):
 
         return 2
 
-    # if it's already a DecoratedMethod, just add to it
-    if isinstance(func, DecoratedMethod):
-        func.decorations.add('before_hook')
-        func.after.append(before_func)
+    return DecoratedMethod.decorate(func, ('before_hook',),
+                                    before=(before_func,))
 
-        return func
-
-    # otherwise, instantiate a new one with our wrapper/bindings by default
-    return DecoratedMethod(func, ('before_hook',), before=(before_func,))
 
 def after_hook(func):
     """
@@ -51,15 +45,8 @@ def after_hook(func):
 
         return 2
 
-    # if it's already a DecoratedMethod, just add to it
-    if isinstance(func, DecoratedMethod):
-        func.decorations.add('after_hook')
-        func.after.append(after_func)
-
-        return func
-
-    # otherwise, instantiate a new one with our wrapper/bindings by default
-    return DecoratedMethod(func, ('after_hook',), after=(after_func,))
+    return DecoratedMethod.decorate(func, ('after_hook',),
+                                    after=(after_func,))
 
 
 # pylint: disable=R0201
@@ -67,29 +54,23 @@ class TestActor(Actor):
 
     """ Stubbed Actor class for testing """
 
-    @blocking
-    def test(self):
-        """ Simple method call. """
-
-        return 1
-
     @singular
     def test_singular(self):
         """ Simple singular cluster method. """
 
         return 3
 
-    @singular
-    @blocking
+    @before_hook
+    @after_hook
     def test_both(self):
         """ More than one decoration. """
 
         return 1
 
-    @blocking
-    @singular
+    @after_hook
+    @before_hook
     def test_both_reverse(self):
-        """ Reverse order of decoration list. """
+        """ More than one decoration (reversed). """
 
         return 1
 
@@ -99,15 +80,15 @@ class TestActor(Actor):
 
         return 3
 
-    @after_hook
-    def test_after_hook(self):
-        """ Test the after-hook binding. """
+    @before_hook
+    def test_before(self):
+        """ Test the before-hook binding. """
 
         return 1
 
-    @before_hook
-    def test_before_hook(self):
-        """ Test the before-hook binding. """
+    @after_hook
+    def test_after(self):
+        """ Test the after-hook binding. """
 
         return 1
 
@@ -141,11 +122,7 @@ class DecoratorsTests(unittest.TestCase):
         """ Test that the number of decorations is accurate. """
 
         self.assertEqual(2, len(self.actor.test_both.decorations))
-
-    def testBlockingMethod(self):
-        """ Fire the @blocking method and make sure the result is valid. """
-
-        self.assertEqual(1, self.proxy.test())
+        self.assertEqual(2, len(self.actor.test_both_reverse.decorations))
 
     def testSingularMethod(self):
         """ Fire the @singular method and make sure there is a result. """
@@ -179,14 +156,14 @@ class DecoratorsTests(unittest.TestCase):
         self.costar.part('decorators_test')
 
     def testBeforeHook(self):
-        """ Test the before-hook DecoratedMethod binding. """
+        """ Test the before-hook function binding. """
 
-        self.assertEqual(2, self.actor.test_before_hook())
+        self.assertEqual(2, self.actor.test_before())
 
     def testAfterHook(self):
-        """ Test the after-hook DecoratedMethod binding. """
+        """ Test the after-hook function binding. """
 
-        self.assertEqual(2, self.actor.test_after_hook())
+        self.assertEqual(2, self.actor.test_after())
 
 if __name__ == '__main__':
     unittest.main()

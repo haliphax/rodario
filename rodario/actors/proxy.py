@@ -43,8 +43,6 @@ class ActorProxy(object):  # pylint: disable=R0903
         # pylint: disable=E1123
         self._pubsub = self._redis.pubsub(ignore_subscribe_messages=True)
         self._pubsub.subscribe(**{'proxy:%s' % self.proxyid: self._handler})
-        # list of blocking methods
-        self._blocking_methods = set()
 
         methods = set()
 
@@ -86,14 +84,7 @@ class ActorProxy(object):  # pylint: disable=R0903
 
         # create proxy methods for each public method of the original Actor
         for name in methods:
-            name_split = name.split(':')
-
-            for attr in name_split[1:]:
-                if attr == 'blocking':
-                    self._blocking_methods.add(name_split[0])
-
-            setattr(self, name_split[0],
-                    types.MethodType(get_lambda(name_split[0]), self))
+            setattr(self, name, types.MethodType(get_lambda(name), self))
 
     def _handler(self, message):
         """
@@ -132,8 +123,5 @@ class ActorProxy(object):  # pylint: disable=R0903
 
         queue = Queue()
         self._response_queues[uuid] = queue
-
-        if method_name in self._blocking_methods:
-            return queue.get()
 
         return Future(queue)
