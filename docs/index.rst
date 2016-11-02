@@ -49,6 +49,11 @@ Actors and Proxies
 Decorators
 ----------
 
+.. autoclass:: rodario.decorators.DecoratedMethod
+    :members:
+
+    .. automethod:: rodario.decorators.DecoratedMethod.__init__
+
 .. autofunction:: rodario.decorators.blocking
 .. autofunction:: rodario.decorators.singular
 

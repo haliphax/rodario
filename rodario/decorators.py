@@ -63,6 +63,31 @@ class DecoratedMethod(object):
 
         return result
 
+    @staticmethod
+    def decorate(func, decorations=None, before=None, after=None):
+        """
+        Decorate the given function. If it is already a `DecoratedMethod`, it
+        will be appended to rather than overwritten.
+
+        :param set decorations: The decorator tags to attach
+        :param list before: The list of before-hook functions
+        :param list after: The list of after-hook functions
+        :rtype: :class:`rodario.decorators.DecoratedMethod`
+        :returns: A ``DecoratedMethod`` wrapper around ``func``
+        """
+
+        if isinstance(func, DecoratedMethod):
+            if decorations is not None:
+                func.decorations |= set(decorations)
+            if before is not None:
+                func.before += list(before)
+            if after is not None:
+                func.after += list(after)
+        else:
+            func = DecoratedMethod(func, decorations, before, after)
+
+        return func
+
 def blocking(func):
     """
     Block the thread and return the proxied method call's result. This is
@@ -73,13 +98,7 @@ def blocking(func):
     :rtype: :class:`rodario.decorators.DecoratedMethod`
     """
 
-    # if it's already a DecoratedMethod, just add to it
-    if isinstance(func, DecoratedMethod):
-        func.decorations.add('blocking')
-        return func
-
-    # otherwise, instantiate a new one with our wrapper/bindings by default
-    return DecoratedMethod(func, ('blocking',))
+    return DecoratedMethod.decorate(func, ('blocking',))
 
 def singular(func):
     """
@@ -131,14 +150,5 @@ def singular(func):
         lock_name = '%s:%s' % (lock_context, func.__name__)
         self._redis.delete(lock_name)
 
-    # if it's already a DecoratedMethod, just add to it
-    if isinstance(func, DecoratedMethod):
-        func.decorations.add('singular')
-        func.before.append(before_singular)
-        func.after.append(after_singular)
-
-        return func
-
-    # otherwise, instantiate a new one with our wrapper/bindings by default
-    return DecoratedMethod(func, ('singular',), (before_singular,),
-                           (after_singular,))
+    return DecoratedMethod.decorate(func, ('singular',), (before_singular,),
+                                    (after_singular,))
