@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-pylint setup.py rodario
-coverage run --source=rodario --omit="*/test_*" -m unittest discover $@
+pylint rodario
+coverage run --source=rodario --omit="*/test_*,*/setup.py" -m unittest discover $@
 coverage report

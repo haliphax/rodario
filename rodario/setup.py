@@ -1,5 +1,6 @@
 """ setuptools installer for rodario framework """
 
+# pylint: disable=C0103
 from os.path import realpath, dirname, join
 from setuptools import setup, find_packages
 
