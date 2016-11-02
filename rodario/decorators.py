@@ -6,6 +6,13 @@ class DecoratedMethod(object):
 
     """ Generic decorated method """
 
+    #: Set of decorator tags
+    decorations = set()
+    #: List of before-hook functions
+    before = list()
+    #: List of after-hook functions
+    after = list()
+
     def __init__(self, func, decorations=None, before=None, after=None):
         """
         Wrap the given function.
