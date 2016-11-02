@@ -12,10 +12,15 @@ class _RegistrySingleton(object):
 
     """ Singleton for actor registry """
 
-    def __init__(self):
-        """ Initialize the registry. """
+    def __init__(self, prefix=None):
+        """
+        Initialize the registry.
+
+        :param str prefix: Optional prefix for redis key names
+        """
 
         self._redis = redis.StrictRedis()
+        self._list = '{prefix}actors'.format(prefix=prefix)
 
     @property
     def actors(self):
@@ -25,7 +30,7 @@ class _RegistrySingleton(object):
         :rtype: :class:`set`
         """
 
-        return self._redis.smembers('actors')
+        return self._redis.smembers(self._list)
 
     def register(self, uuid):
         """
@@ -34,7 +39,7 @@ class _RegistrySingleton(object):
         :param str uuid: The UUID of the actor to register
         """
 
-        if self._redis.sadd('actors', uuid) == 0:
+        if self._redis.sadd(self._list, uuid) == 0:
             raise RegistrationException('Failed adding member to set')
 
     def unregister(self, uuid):
@@ -44,7 +49,7 @@ class _RegistrySingleton(object):
         :param str uuid: The UUID of the actor to unregister
         """
 
-        self._redis.srem('actors', uuid)
+        self._redis.srem(self._list, uuid)
 
     def exists(self, uuid):
         """
@@ -54,7 +59,7 @@ class _RegistrySingleton(object):
         :rtype: :class:`bool`
         """
 
-        return self._redis.sismember('actors', uuid) == 1
+        return self._redis.sismember(self._list, uuid) == 1
 
     # pylint: disable=R0201
     def get_proxy(self, uuid):
@@ -79,14 +84,15 @@ class Registry(object):
 
     _instance = None
 
-    def __new__(cls):
+    def __new__(cls, prefix=None):
         """
         Retrieve the singleton instance for Registry.
 
+        :param str prefix: Optional prefix for redis key names
         :rtype: :class:`rodario.registry._RegistrySingleton`
         """
 
         if not cls._instance:
-            cls._instance = _RegistrySingleton()
+            cls._instance = _RegistrySingleton(prefix=prefix)
 
         return cls._instance

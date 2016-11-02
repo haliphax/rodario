@@ -8,6 +8,8 @@ from rodario.actors import Actor, ActorProxy
 from rodario.registry import Registry
 from rodario.exceptions import RegistrationException
 
+# 3rd party
+import redis
 
 class RegistryTestActor(Actor):
 
@@ -28,7 +30,10 @@ class RegistryTests(unittest.TestCase):
     def setUpClass(cls):
         """ Grab the Registry singleton. """
 
-        cls.registry = Registry()
+        cls.registry = Registry(prefix='test.')
+        r = redis.StrictRedis()
+        r.delete('test.actors')
+        del r
 
     @classmethod
     def tearDownClass(cls):
