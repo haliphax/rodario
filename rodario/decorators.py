@@ -97,9 +97,8 @@ class DecoratedMethod(object):
 
 def singular(func):
     """
-    First-come, first-served cluster channel call. Unlike the @blocking
-    decorator, this is self-contained. All of the work happens right here.
-    Needs some work - should accept parameters for context and expiry.
+    First-come, first-served cluster channel call. Needs some work; should
+    accept parameters for context and expiry.
 
     :param instancemethod func: The function to wrap
     :rtype: :class:`rodario.decorators.DecoratedMethod`
