@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
     setup(
         name='rodario',
-        version='1.0.0a7',
+        version='1.0.0a8',
         description='Simple, redis-backed Python actor framework',
         url='https://github.com/haliphax/rodario',
         author='haliphax',
