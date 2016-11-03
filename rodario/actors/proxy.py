@@ -8,10 +8,8 @@ from threading import Thread
 from uuid import uuid4
 from time import sleep
 
-# 3rd party
-import redis
-
 # local
+from rodario import get_redis_connection
 from rodario.future import Future
 from rodario.exceptions import InvalidActorException, InvalidProxyException
 
@@ -31,7 +29,7 @@ class ActorProxy(object):  # pylint: disable=R0903
         """
 
         #: Redis connection
-        self._redis = redis.StrictRedis()
+        self._redis = get_redis_connection()
         #: Redis PubSub client
         self._pubsub = None
         #: This proxy object's UUID for creating unique channels

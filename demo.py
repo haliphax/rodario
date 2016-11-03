@@ -2,9 +2,13 @@
 import inspect
 import time
 
+# 3rd party
+from redis import StrictRedis
+
 # local
+import rodario
+rodario.get_redis_connection = lambda: StrictRedis(host='localhost')
 from rodario.actors import Actor, ActorProxy
-from rodario.decorators import blocking
 
 
 class MyActor(Actor):
@@ -18,14 +22,6 @@ class MyActor(Actor):
         print 'Hello! My name is {prefix} {name}'.format(prefix=prefix,
                                                          name=self.name)
         return 'return value for {prefix}'.format(prefix=prefix)
-
-    @blocking
-    def long_greeting(self, prefix='The Great'):
-        print 'Hello...'
-        time.sleep(3)
-        print 'My name is {prefix} {name}'.format(prefix=prefix, name=self.name)
-
-        return 'return value for {prefix} long greet'.format(prefix=prefix)
 
     def channel_func(self, message):
         print 'Cluster message received by %s' % self.name
@@ -48,7 +44,6 @@ if __name__ == '__main__':
     actor.greeting('The Intelligent')
     proxy = ActorProxy(uuid=actor.uuid)
     return_value1 = proxy.greeting('The Elegant')
-    print proxy.long_greeting('The Irresistible')
     return_value2 = proxy.greeting()
     print return_value2.get()
     print return_value1.get()

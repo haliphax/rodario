@@ -8,10 +8,8 @@ from threading import Thread
 from time import sleep
 from uuid import uuid4
 
-# 3rd party
-import redis
-
 # local
+from rodario import get_redis_connection
 from rodario.future import Future
 from rodario.exceptions import EmptyClusterException
 
@@ -39,7 +37,7 @@ class ClusterProxy(object):
         #: Cluster channel
         self.channel = channel
         #: Redis connection
-        self._redis = redis.StrictRedis()
+        self._redis = get_redis_connection()
         #: Redis PubSub client
         self._pubsub = None
         #: This proxy object's UUID for creating unique channels

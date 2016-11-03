@@ -1,9 +1,7 @@
 """ Actor registry for rodario framework """
 
-# 3rd party
-import redis
-
 # local
+from rodario import get_redis_connection
 from rodario.exceptions import RegistrationException
 
 
@@ -19,7 +17,7 @@ class _RegistrySingleton(object):
         :param str prefix: Optional prefix for redis key names
         """
 
-        self._redis = redis.StrictRedis()
+        self._redis = get_redis_connection()
         self._list = '{prefix}actors'.format(prefix=prefix)
 
     @property

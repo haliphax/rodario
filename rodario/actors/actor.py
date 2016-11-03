@@ -8,10 +8,8 @@ from threading import Thread, Event
 import pickle
 import inspect
 
-# 3rd party
-import redis
-
 # local
+from rodario import get_redis_connection
 from rodario.registry import Registry
 from rodario.exceptions import UUIDInUseException
 
@@ -41,7 +39,7 @@ class Actor(object):
         #: Separate Thread for handling messages
         self._proc = None
         #: Redis connection
-        self._redis = redis.StrictRedis()
+        self._redis = get_redis_connection()
         # pylint: disable=E1123
         self._pubsub = self._redis.pubsub(ignore_subscribe_messages=True)
 
