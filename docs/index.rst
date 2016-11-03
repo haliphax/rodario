@@ -8,6 +8,17 @@ A simple, redis-backed Python actor framework
 .. toctree::
     :maxdepth: 2
 
+Connection
+----------
+
+By default, rodario will use a ``StrictRedis`` connection to localhost on the
+default port. If you wish to override this behavior, then replace the
+``rodario.get_redis_connection`` method after import::
+
+    from redis import StrictRedis
+    import rodario
+    rodario.get_redis_connection = lambda: StrictRedis(host='1.2.3.4')
+
 The Registry
 ------------
 
