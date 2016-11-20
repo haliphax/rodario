@@ -133,7 +133,7 @@ class DecoratorsTests(unittest.TestCase):
         self.costar.join('decorators_test')
         future = self.cluster.test_singular()
         # first value is number of workers in cluster pool
-        self.assertEqual(2, future.get())
+        self.assertEqual(2, future.get(timeout=3))
         # second value is the actual function call result
         self.assertEqual(3, future.get(timeout=3))
         self._redis.delete('global.lock:test_singular')
@@ -149,7 +149,7 @@ class DecoratorsTests(unittest.TestCase):
         self.costar.join('decorators_test')
         future = self.cluster.test_expiry()
         # first value is number of workers in cluster pool
-        self.assertEqual(2, future.get())
+        self.assertEqual(2, future.get(timeout=3))
         # second value is the actual function call result
         self.assertEqual(3, future.get(timeout=3))
         self.actor.part('decorators_test')
