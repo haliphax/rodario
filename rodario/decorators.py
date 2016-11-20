@@ -1,7 +1,11 @@
 """ Function decorators for rodario framework """
 
+# local
+from rodario.util import acquire_lock
 
-# pylint: disable=R0903,W0613,W0212
+# pylint: disable=R0903,W0613
+
+
 class DecoratedMethod(object):
 
     """ Generic decorated method """
@@ -25,7 +29,8 @@ class DecoratedMethod(object):
 
         self._func = func
         self._instance = None
-        self.decorations = set(decorations) if decorations is not None else set()
+        self.decorations = set(
+            decorations) if decorations is not None else set()
         self.before = list(before) if before is not None else list()
         self.after = list(after) if after is not None else list()
 
@@ -95,6 +100,7 @@ class DecoratedMethod(object):
 
         return func
 
+
 def singular(func):
     """
     First-come, first-served cluster channel call. Needs some work; should
@@ -104,9 +110,6 @@ def singular(func):
     :rtype: :class:`rodario.decorators.DecoratedMethod`
     """
 
-    from time import time
-
-    expiry = 2
     context = None
 
     def before_singular(self, *args, **kwargs):
@@ -114,26 +117,12 @@ def singular(func):
         Call the method if we can get a lock.
 
         :rtype: mixed
-        :returns: The function result if a lock is acquired; otherwise, False.
+        :returns: None if a lock is acquired; otherwise, False.
         """
 
-        current = time()
-        lock_expires = current + expiry + 1
-        lock_context = 'global.lock' if not context else context
-        lock_name = '%s:%s' % (lock_context, func.__name__)
-
-        # try to get lock; if we fail, do sanity check on lock
-        if not self._redis.setnx(lock_name, lock_expires):
-            # see if current lock is expired; if so, take it
-            if current < float(self._redis.get(lock_name)):
-                # lock is not expired
-                return False
-            elif current < float(self._redis.getset(lock_name, lock_expires)):
-                # somebody else beat us to it
-                return False
-
-        # we have the lock; give it a TTL and pass through
-        self._redis.expire(lock_name, expiry)
+        # pylint: disable=W0212
+        if not acquire_lock(func.__name__, conn=self._redis):
+            return False
 
     def after_singular(self, result, *args, **kwargs):
         """
@@ -142,7 +131,7 @@ def singular(func):
 
         lock_context = 'global.lock' if not context else context
         lock_name = '%s:%s' % (lock_context, func.__name__)
-        self._redis.delete(lock_name)
+        self._redis.delete(lock_name)  # pylint: disable=W0212
 
     return DecoratedMethod.decorate(func, ('singular',), (before_singular,),
                                     (after_singular,))
