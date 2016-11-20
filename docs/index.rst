@@ -76,6 +76,12 @@ Exceptions
 .. autoclass:: rodario.exceptions.RegistrationException
 .. autoclass:: rodario.exceptions.EmptyClusterException
 
+Utilities
+---------
+
+.. automodule:: rodario.util
+    :members:
+
 Indices and tables
 ==================
 
