@@ -1,4 +1,6 @@
-rodario
+.. image:: https://oddnetwork.org/hx/rodario.png
+    :alt: rodario
+    :width: 100%
 =======
 
 A simple, redis-backed Python actor framework
