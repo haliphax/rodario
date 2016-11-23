@@ -21,7 +21,7 @@ class DecoratedMethod(object):
         """
         Wrap the given function.
 
-        :param instancemethod func: The function to wrap
+        :param function func: The function to wrap
         :param set decorations: The decorator tags to attach
         :param list before: The list of before-hook functions
         :param list after: The list of after-hook functions
