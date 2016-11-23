@@ -106,7 +106,7 @@ def singular(func):
     First-come, first-served cluster channel call. Needs some work; should
     accept parameters for context and expiry.
 
-    :param instancemethod func: The function to wrap
+    :param function func: The function to wrap
     :rtype: :class:`rodario.decorators.DecoratedMethod`
     """
 
