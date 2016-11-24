@@ -7,7 +7,7 @@ rodario
 
 A simple, redis-backed Python actor framework
 
-* `Homepage <https://github.com/haliphax/rodario>`_
+* `Homepage <https://haliphax.github.io/rodario>`_
 
 .. toctree::
     :maxdepth: 2
