@@ -29,11 +29,9 @@ def acquire_lock(name, expiry=None, context=None, conn=None):
     # try to get lock; if we fail, do sanity check on lock
     if not redis.setnx(lock_name, lock_expires):
         # see if current lock is expired; if so, take it
-        if current < float(redis.get(lock_name)):
-            # lock is not expired
-            return False
-        elif current < float(redis.getset(lock_name, lock_expires)):
-            # somebody else beat us to it
+        if (current < float(redis.get(lock_name))
+                or current < float(redis.getset(lock_name, lock_expires))):
+            # lock is not expired or somebody else beat us to it
             return False
 
     # we have the lock; give it a TTL and pass through
