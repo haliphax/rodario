@@ -8,7 +8,7 @@ Simple, redis-backed Python actor framework
 
 ## Source
 
-[oddnetwork.org repository](https://oddnetwork.org/git/haliphax/rodario)
+[oddnetwork.org repository](https://git.oddnetwork.org/haliphax/rodario)
 
 ## Mirrors
 
