@@ -64,7 +64,6 @@ class DecoratedMethod(object):
                 return result
 
         result = self._func(self._instance, *args, **kwargs)
-        mutated = None
 
         # now call each of the after-hook bindings
         for callee in self.after:
